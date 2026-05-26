@@ -66,7 +66,7 @@ Open [http://localhost:4321](http://localhost:4321) and confirm:
 3. Build settings:
    - **Build command:** `npm run build`
    - **Build output directory:** `dist`
-   - **Node version:** `20` (set in Environment Variables as `NODE_VERSION=20`)
+   - **Node version:** `22` (set in Environment Variables as `NODE_VERSION=22`)
 4. Add environment variables in the Cloudflare Pages dashboard (Settings → Environment variables):
    ```
    SANITY_STUDIO_PROJECT_ID = your_8char_project_id
