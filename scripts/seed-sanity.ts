@@ -97,6 +97,9 @@ const EVENT_META: Record<
     description: string;
     sortOrder: number;
     sourceDir?: string;
+    coverFilename?: string;
+    excludeGalleryFilenames?: string[];
+    gallerySortOverrides?: Record<string, number>;
   }
 > = {
   "kelce-jam": {
@@ -126,6 +129,17 @@ const EVENT_META: Record<
       "Full-event fan fest coverage featuring celebrity performance moments, crowd energy, sponsor-friendly atmosphere, and production scale.",
     sortOrder: 3,
     sourceDir: "big-12-fan-fest-dj-khaled-dj-diesel",
+    coverFilename: "DSC01651.jpg",
+    excludeGalleryFilenames: [
+      "DSC01903.jpg",
+      "DSC02145.jpg",
+      "DSC02211.jpg",
+      "DSC02609.jpg",
+      "DSC01771.jpg",
+    ],
+    gallerySortOverrides: {
+      "DSC01835.jpg": 2.5,
+    },
   },
   "two-friends-kansas-city-live": {
     title: "Two Friends – Kansas City Live",
@@ -175,8 +189,13 @@ async function seedEvents() {
 
     // Find cover: prefer file named "cover.*", then first image
     const coverFile =
-      files.find((f) => /^cover\./i.test(path.basename(f))) || files[0];
-    const galleryFiles = files.filter((f) => f !== coverFile);
+      (meta.coverFilename
+        ? files.find((f) => path.basename(f) === meta.coverFilename)
+        : undefined) ||
+      files.find((f) => /^cover\./i.test(path.basename(f))) ||
+      files[0];
+    const excluded = new Set(meta.excludeGalleryFilenames || []);
+    const galleryFiles = files.filter((f) => f !== coverFile && !excluded.has(path.basename(f)));
 
     const coverRef = await uploadImage(coverFile, `cover → ${slug}`);
 
@@ -184,7 +203,14 @@ async function seedEvents() {
     for (let i = 0; i < galleryFiles.length; i++) {
       const ref = await uploadImage(galleryFiles[i], `gallery[${i + 1}] → ${slug}`);
       const basename = path.basename(galleryFiles[i], path.extname(galleryFiles[i]));
-      galleryItems.push(makeGalleryImage(ref, `${meta.title} — ${basename}`, i + 1));
+      const filename = path.basename(galleryFiles[i]);
+      galleryItems.push(
+        makeGalleryImage(
+          ref,
+          `${meta.title} — ${basename}`,
+          meta.gallerySortOverrides?.[filename] ?? i + 1
+        )
+      );
     }
 
     const docId = `eventGallery-${slug}`;
