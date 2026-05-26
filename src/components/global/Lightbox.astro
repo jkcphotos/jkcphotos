@@ -1,0 +1,13 @@
+---
+interface Props {
+  ariaLabel?: string;
+}
+const { ariaLabel = "Image viewer" } = Astro.props;
+---
+
+<div class="lightbox" aria-hidden="true" role="dialog" aria-label={ariaLabel}>
+  <button class="lightbox__close" type="button" aria-label="Close">✕</button>
+  <img class="lightbox__img" alt="Expanded image" />
+  <button class="lightbox__prev" type="button" aria-label="Previous">‹</button>
+  <button class="lightbox__next" type="button" aria-label="Next">›</button>
+</div>

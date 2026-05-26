@@ -1,0 +1,48 @@
+---
+import "../styles/global.css";
+import Header from "../components/global/Header.astro";
+import Footer from "../components/global/Footer.astro";
+import Lightbox from "../components/global/Lightbox.astro";
+import SEO from "../components/global/SEO.astro";
+import type { SanityImageValue } from "../lib/sanityImage";
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: SanityImageValue | null;
+  forceScrolledHeader?: boolean;
+  email?: string;
+  showLightbox?: boolean;
+}
+
+const {
+  title,
+  description,
+  ogImage,
+  forceScrolledHeader = false,
+  email,
+  showLightbox = true
+} = Astro.props;
+
+const currentPath = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <SEO title={title} description={description} ogImage={ogImage} canonical={new URL(currentPath, Astro.site).toString()} />
+  </head>
+  <body>
+    <Header currentPath={currentPath} forceScrolled={forceScrolledHeader} />
+    <main>
+      <slot />
+    </main>
+    <Footer email={email} />
+    {showLightbox && <Lightbox />}
+    <script>
+      import "../scripts/main";
+    </script>
+  </body>
+</html>

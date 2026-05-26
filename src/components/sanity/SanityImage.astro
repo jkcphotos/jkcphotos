@@ -1,0 +1,62 @@
+---
+import { urlFor, type SanityImageValue } from "../../lib/sanityImage";
+
+interface Props {
+  image: SanityImageValue | undefined | null;
+  alt?: string;
+  width?: number;
+  height?: number;
+  sizes?: string;
+  loading?: "lazy" | "eager";
+  decoding?: "async" | "sync" | "auto";
+  class?: string;
+  fit?: "cover" | "contain" | "max";
+  quality?: number;
+}
+
+const {
+  image,
+  alt,
+  width,
+  height,
+  sizes = "(max-width: 900px) 100vw, 1200px",
+  loading = "lazy",
+  decoding = "async",
+  class: className,
+  fit = "max",
+  quality = 80
+} = Astro.props;
+
+const altText = alt ?? image?.alt ?? "";
+const meta = (image?.asset as any)?.metadata;
+const dims = meta?.dimensions as { width: number; height: number } | undefined;
+const lqip: string | undefined = meta?.lqip;
+
+const intrinsicWidth = width ?? dims?.width ?? 1600;
+const intrinsicHeight = height ?? dims?.height ?? 1067;
+
+function build(w: number) {
+  if (!image) return "";
+  const sanityFit = fit === "cover" ? "crop" : fit;
+  return urlFor(image as any).width(w).fit(sanityFit).auto("format").quality(quality).url();
+}
+
+const widths = [600, 900, 1200, 1600, 2000, 2400];
+const srcset = image ? widths.map((w) => `${build(w)} ${w}w`).join(", ") : "";
+const fallback = image ? build(Math.max(intrinsicWidth, 1200)) : "";
+---
+
+{image ? (
+  <img
+    src={fallback}
+    srcset={srcset}
+    sizes={sizes}
+    width={intrinsicWidth}
+    height={intrinsicHeight}
+    alt={altText}
+    loading={loading}
+    decoding={decoding}
+    class={className}
+    style={lqip ? `background-image:url(${lqip}); background-size:cover; background-position:center;` : undefined}
+  />
+) : null}

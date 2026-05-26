@@ -1,0 +1,33 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import SanityImage from "../components/sanity/SanityImage.astro";
+import type { SanityImageValue } from "../lib/sanityImage";
+
+interface Props {
+  title?: string;
+  description?: string;
+  pageTitle: string;
+  lede?: string;
+  bannerImage?: SanityImageValue | null;
+  ogImage?: SanityImageValue | null;
+}
+
+const { title, description, pageTitle, lede, bannerImage, ogImage } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} ogImage={ogImage} forceScrolledHeader>
+  <section class="section" style="padding-top: 120px;">
+    <div class="wrap wrap--wide">
+      <div class="banner">
+        {bannerImage && <SanityImage image={bannerImage} class="banner__bg" sizes="100vw" fit="cover" />}
+        <div class="banner__content">
+          <h2 class="banner__title">{pageTitle}</h2>
+        </div>
+      </div>
+
+      {lede && <p class="section__lede fade-in">{lede}</p>}
+
+      <slot />
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,39 @@
+---
+import SanityImage from "../sanity/SanityImage.astro";
+import { urlFor, type GalleryImageValue, type SanityImageValue } from "../../lib/sanityImage";
+
+interface Props {
+  item: GalleryImageValue | { image?: SanityImageValue } | undefined | null;
+  variant?: "feature" | "hero" | "mid" | "wide" | "default";
+  ariaLabel?: string;
+  sizes?: string;
+  focus?: "top" | "center" | "bottom" | "left" | "right";
+  class?: string;
+}
+
+const {
+  item,
+  variant = "default",
+  ariaLabel,
+  sizes = "(max-width: 900px) 100vw, 50vw",
+  focus,
+  class: extraClass
+} = Astro.props;
+
+const image = item?.image;
+const tileClass = ["tile", variant !== "default" ? `tile--${variant}` : "", focus ? `focus-${focus}` : "", extraClass]
+  .filter(Boolean)
+  .join(" ");
+
+const fullUrl = image
+  ? urlFor(image as any).width(2400).fit("max").auto("format").quality(85).url()
+  : undefined;
+
+const altText = image?.alt || ariaLabel || "Photo";
+---
+
+{image && fullUrl && (
+  <button class={tileClass} type="button" data-full={fullUrl} aria-label={ariaLabel || altText}>
+    <SanityImage image={image} sizes={sizes} fit="cover" />
+  </button>
+)}

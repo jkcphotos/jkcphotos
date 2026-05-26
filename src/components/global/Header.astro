@@ -1,0 +1,28 @@
+---
+interface Props {
+  currentPath?: string;
+  forceScrolled?: boolean;
+}
+
+const { currentPath, forceScrolled = false } = Astro.props;
+
+function isActive(href: string) {
+  if (!currentPath) return false;
+  if (href === "/") return currentPath === "/";
+  return currentPath === href || currentPath.startsWith(href);
+}
+---
+
+<header class={`topbar ${forceScrolled ? "is-scrolled" : ""}`} id="top" data-always-scrolled={forceScrolled ? "true" : undefined}>
+  <div class="wrap topbar__inner">
+    <a class="brand" href="/" aria-label="JKC Photos home">JKC<span>photos</span></a>
+    <nav class="nav" aria-label="Primary">
+      <a href="/#work">Work</a>
+      <a href="/events/" aria-current={isActive("/events/") ? "page" : undefined}>Events</a>
+      <a class="nav__secondary" href="/portraits/" aria-current={isActive("/portraits/") ? "page" : undefined}>Portraits</a>
+      <a class="nav__secondary" href="/nightlife/" aria-current={isActive("/nightlife/") ? "page" : undefined}>Nightlife</a>
+      <a href="/about/" aria-current={isActive("/about/") ? "page" : undefined}>About</a>
+      <a class="btn btn--ghost btn--small" href="/#contact">Book</a>
+    </nav>
+  </div>
+</header>

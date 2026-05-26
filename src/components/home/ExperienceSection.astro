@@ -1,0 +1,19 @@
+---
+import SectionBanner from "./SectionBanner.astro";
+import MasonryGallery from "../gallery/MasonryGallery.astro";
+import type { GalleryImageValue, SanityImageValue } from "../../lib/sanityImage";
+
+interface Props {
+  banner?: SanityImageValue | null;
+  items?: GalleryImageValue[] | null;
+}
+
+const { banner, items } = Astro.props;
+---
+
+<section class="section section--experience headliners-to-experience" id="experience">
+  <SectionBanner title="The Experience" image={banner} bgClass="experience-intro__bg" containerClass="experience-intro section-banner" />
+  <div class="wrap wrap--wide">
+    <MasonryGallery items={items} ariaLabel="Event experience gallery" sizes="(max-width: 700px) 100vw, 33vw" />
+  </div>
+</section>

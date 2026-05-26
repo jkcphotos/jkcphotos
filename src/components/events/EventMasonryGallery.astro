@@ -1,0 +1,23 @@
+---
+import MasonryGallery from "../gallery/MasonryGallery.astro";
+import type { GalleryImageValue } from "../../lib/sanityImage";
+
+interface Props {
+  items: GalleryImageValue[] | undefined | null;
+  ariaLabel?: string;
+}
+
+const { items, ariaLabel = "Full event gallery" } = Astro.props;
+---
+
+<section class="event-gallery-section">
+  <div class="wrap wrap--wide">
+    <MasonryGallery
+      items={items}
+      ariaLabel={ariaLabel}
+      containerClass="event-gallery"
+      itemClass="event-gallery__item"
+      sizes="(max-width: 700px) 100vw, 33vw"
+    />
+  </div>
+</section>

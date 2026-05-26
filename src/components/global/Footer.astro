@@ -1,0 +1,20 @@
+---
+interface Props {
+  email?: string;
+}
+const { email } = Astro.props;
+---
+
+<footer class="footer">
+  <div class="wrap wrap--wide footer__inner">
+    <span>&copy; <span id="year"></span> JKC Photos</span>
+    <div class="footer__links">
+      <a href="/#work">Work</a>
+      <a href="/events/">Events</a>
+      <a href="/portraits/">Portraits</a>
+      <a href="/nightlife/">Nightlife</a>
+      <a href="/about/">About</a>
+      <a href="/#contact">Book</a>
+    </div>
+  </div>
+</footer>

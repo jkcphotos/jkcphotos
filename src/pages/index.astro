@@ -1,0 +1,58 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import HomeHero from "../components/home/HomeHero.astro";
+import FeaturedWorkGrid from "../components/home/FeaturedWorkGrid.astro";
+import HeadlinersSection from "../components/home/HeadlinersSection.astro";
+import ExperienceSection from "../components/home/ExperienceSection.astro";
+import ServicesSection from "../components/home/ServicesSection.astro";
+import ContactSection from "../components/home/ContactSection.astro";
+
+import { sanityClient } from "../lib/sanityClient";
+import { HOMEPAGE_QUERY, SITE_SETTINGS_QUERY } from "../lib/queries";
+import type { HomepageDoc, SiteSettingsDoc } from "../types/sanity";
+
+let homepage: HomepageDoc | null = null;
+let settings: SiteSettingsDoc | null = null;
+let fetchError: string | null = null;
+
+try {
+  homepage = await sanityClient.fetch<HomepageDoc>(HOMEPAGE_QUERY);
+  settings = await sanityClient.fetch<SiteSettingsDoc>(SITE_SETTINGS_QUERY);
+} catch (err) {
+  fetchError = err instanceof Error ? err.message : String(err);
+}
+
+const title = settings?.defaultSeoTitle || `${settings?.siteTitle ?? "JKC Photos"} | Concert + Event Photography`;
+const description =
+  settings?.defaultSeoDescription ||
+  "Concert, nightlife, and brand event photography. Kansas City and available for travel.";
+---
+
+<BaseLayout title={title} description={description} ogImage={settings?.defaultOgImage}>
+  {fetchError && (
+    <div style="padding: 120px 24px 40px; text-align:center; color: var(--text-muted)">
+      <p>Sanity content is not loaded yet. Add your project ID to <code>.env</code> and publish content in <a href="/admin">/admin</a>.</p>
+    </div>
+  )}
+
+  <HomeHero
+    headline={homepage?.headline}
+    subheadline={homepage?.subheadline}
+    heroImage={homepage?.heroImage}
+    proofItems={homepage?.proofItems}
+  />
+
+  <FeaturedWorkGrid items={homepage?.featuredWork} />
+
+  <HeadlinersSection banner={homepage?.headlinersBanner} items={homepage?.headlinersImages} />
+
+  <ExperienceSection banner={homepage?.experienceBanner} items={homepage?.experienceImages} />
+
+  <ServicesSection tagline={homepage?.servicesTagline} services={homepage?.services} />
+
+  <ContactSection
+    headline={homepage?.contactHeadline}
+    subhead={homepage?.contactSubhead}
+    email={settings?.email}
+  />
+</BaseLayout>

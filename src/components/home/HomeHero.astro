@@ -1,0 +1,56 @@
+---
+import SanityImage from "../sanity/SanityImage.astro";
+import type { SanityImageValue } from "../../lib/sanityImage";
+
+interface Props {
+  headline?: string;
+  subheadline?: string;
+  heroImage?: SanityImageValue | null;
+  proofItems?: { value?: string; label?: string }[];
+}
+
+const {
+  headline = "Show the scale. Capture the moment.",
+  subheadline = "For venues, promoters, and artists who need crowd energy, stage moments, and clean deliverables fast.",
+  heroImage,
+  proofItems = [
+    { value: "24–48h", label: "Turnaround" },
+    { value: "Press + Social", label: "Ready Exports" },
+    { value: "Kansas City", label: "+ Travel" }
+  ]
+} = Astro.props;
+
+const [firstWord, ...rest] = headline.split(" ");
+const periodIndex = headline.indexOf(".");
+let line1 = headline;
+let line2 = "";
+if (periodIndex > -1 && periodIndex < headline.length - 1) {
+  line1 = headline.slice(0, periodIndex + 1).trim();
+  line2 = headline.slice(periodIndex + 1).trim();
+}
+---
+
+<section class="hero">
+  {heroImage && (
+    <SanityImage image={heroImage} class="hero__bg" sizes="100vw" fit="cover" loading="eager" />
+  )}
+  <div class="hero__overlay"></div>
+  <div class="wrap hero__content">
+    <h1>{line1}{line2 && (<><br /><em>{line2}</em></>)}</h1>
+    <p class="subhead">{subheadline}</p>
+    <div class="hero__cta">
+      <a class="btn btn--purple" href="#contact">Check Availability</a>
+      <a class="btn btn--ghost" href="#work">View Work</a>
+    </div>
+    {proofItems.length > 0 && (
+      <div class="proof">
+        {proofItems.map((p) => (
+          <div class="proof__item">
+            <strong>{p.value}</strong>
+            <span>{p.label}</span>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+</section>

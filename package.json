@@ -1,0 +1,33 @@
+{
+  "name": "jkc-photos-site",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "seed": "tsx scripts/seed-sanity.ts"
+  },
+  "dependencies": {
+    "@astrojs/react": "^3.6.2",
+    "@sanity/astro": "^3.4.0",
+    "@sanity/client": "^7.14.1",
+    "@sanity/image-url": "^1.1.0",
+    "@sanity/vision": "^3.93.0",
+    "astro": "^4.16.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "sanity": "^3.93.0",
+    "styled-components": "^6.1.13"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.10",
+    "@types/react-dom": "^18.3.0",
+    "dotenv": "^16.4.5",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.2"
+  }
+}

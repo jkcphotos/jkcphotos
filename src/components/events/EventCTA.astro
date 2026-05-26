@@ -1,0 +1,21 @@
+---
+interface Props {
+  headline?: string;
+  subhead?: string;
+  buttonLabel?: string;
+}
+
+const {
+  headline = "Need coverage like this?",
+  subhead = "Book full concert, festival, and event coverage with fast social-ready delivery.",
+  buttonLabel = "Book Similar Coverage"
+} = Astro.props;
+---
+
+<section class="event-cta">
+  <div class="wrap">
+    <h2>{headline}</h2>
+    <p>{subhead}</p>
+    <a class="btn" href="/#contact">{buttonLabel}</a>
+  </div>
+</section>

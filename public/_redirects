@@ -1,0 +1,7 @@
+# Legacy HTML page redirects
+/index.html           /          301
+/events.html          /events/   301
+/about.html           /about     301
+/portraits.html       /portraits 301
+/nightlife.html       /nightlife 301
+/event.html           /events/   301

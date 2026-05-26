@@ -1,0 +1,40 @@
+---
+interface Props {
+  headline?: string;
+  subhead?: string;
+  email?: string;
+}
+
+const {
+  headline = "Let's Work Together",
+  subhead = "Tell me the date, venue, and what you need. I'll reply with availability and a simple next step.",
+  email = "hello@jkcphotos.com"
+} = Astro.props;
+---
+
+<section class="section" id="contact">
+  <div class="wrap">
+    <div class="cta">
+      <h2>{headline}</h2>
+      <p>{subhead}</p>
+
+      <form class="form" onsubmit="return false;">
+        <label>
+          Name
+          <input type="text" placeholder="Your name" />
+        </label>
+        <label>
+          Email
+          <input type="email" placeholder="you@example.com" />
+        </label>
+        <label>
+          Project Details
+          <textarea rows="4" placeholder="Event, date, city, deliverables…"></textarea>
+        </label>
+        <button class="btn" type="button" id="copyEmail" data-email={email}>Copy My Email</button>
+      </form>
+
+      <p class="small">Or reach out directly: <a href={`mailto:${email}`}>{email}</a></p>
+    </div>
+  </div>
+</section>

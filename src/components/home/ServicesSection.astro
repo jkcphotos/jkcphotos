@@ -1,0 +1,64 @@
+---
+interface Service {
+  title?: string;
+  bullets?: string[];
+}
+
+interface Props {
+  tagline?: string;
+  services?: Service[];
+}
+
+const defaultServices: Service[] = [
+  {
+    title: "Event Coverage",
+    bullets: [
+      "Full show documentation plus crowd energy",
+      "Quick selects for same-night social",
+      "Delivery in web and print-ready sizes"
+    ]
+  },
+  {
+    title: "Brand + Venue",
+    bullets: [
+      "Sponsor activations and signage",
+      "On-brand, consistent edits",
+      "Usage licensing guidance included"
+    ]
+  },
+  {
+    title: "Portraits",
+    bullets: [
+      "Artist, DJ, team, and lifestyle",
+      "Simple setup, clean results",
+      "Perfect for press and posters"
+    ]
+  }
+];
+
+const {
+  tagline = "Pick what you need, or tell me about the show and I'll recommend the right package.",
+  services = defaultServices
+} = Astro.props;
+
+const resolved = services && services.length ? services : defaultServices;
+---
+
+<section class="section section--alt" id="services">
+  <div class="wrap">
+    <div class="section__head fade-in">
+      <h2>Services</h2>
+      <p>{tagline}</p>
+    </div>
+    <div class="cards">
+      {resolved.map((s) => (
+        <article class="card">
+          <h3>{s.title}</h3>
+          <ul>
+            {(s.bullets || []).map((b) => <li>{b}</li>)}
+          </ul>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

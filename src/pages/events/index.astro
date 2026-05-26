@@ -1,0 +1,49 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import EventCard from "../../components/events/EventCard.astro";
+import { sanityClient } from "../../lib/sanityClient";
+import { EVENTS_INDEX_QUERY, SITE_SETTINGS_QUERY } from "../../lib/queries";
+import type { EventGalleryCard, SiteSettingsDoc } from "../../types/sanity";
+
+let events: EventGalleryCard[] = [];
+let settings: SiteSettingsDoc | null = null;
+let fetchError: string | null = null;
+
+try {
+  events = (await sanityClient.fetch<EventGalleryCard[]>(EVENTS_INDEX_QUERY)) || [];
+  settings = await sanityClient.fetch<SiteSettingsDoc>(SITE_SETTINGS_QUERY);
+} catch (err) {
+  fetchError = err instanceof Error ? err.message : String(err);
+}
+---
+
+<BaseLayout
+  title="Events | JKC Photos"
+  description="Full concert and festival galleries by JKC Photos."
+  ogImage={settings?.defaultOgImage}
+  forceScrolledHeader
+>
+  <section class="events-hero">
+    <div class="wrap">
+      <p class="eyebrow">Concerts &amp; Festivals</p>
+      <h1>Event Galleries</h1>
+      <p>
+        Complete galleries from concerts and festivals, built to show consistency across the full event,
+        not just one hero image.
+      </p>
+    </div>
+  </section>
+
+  <section class="events-index">
+    <div class="wrap wrap--wide">
+      {fetchError && (
+        <p style="text-align:center; color: var(--text-muted)">
+          Sanity content is not loaded yet. Publish event galleries in <a href="/admin">/admin</a>.
+        </p>
+      )}
+      <div class="events-grid" aria-label="Concert and festival event galleries">
+        {events.map((event) => <EventCard event={event} />)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

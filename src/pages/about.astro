@@ -1,0 +1,42 @@
+---
+import PortfolioLayout from "../layouts/PortfolioLayout.astro";
+import ImageTile from "../components/gallery/ImageTile.astro";
+import { sanityClient } from "../lib/sanityClient";
+import { SITE_SETTINGS_QUERY } from "../lib/queries";
+import type { SiteSettingsDoc } from "../types/sanity";
+
+let settings: SiteSettingsDoc | null = null;
+try {
+  settings = await sanityClient.fetch<SiteSettingsDoc>(SITE_SETTINGS_QUERY);
+} catch {
+  settings = null;
+}
+
+const lede =
+  settings?.aboutLede ||
+  "Concert and event photographer based in Kansas City. Documenting live music, festivals, and brand moments with an eye for energy and scale.";
+const aboutImages = settings?.aboutImages || [];
+const banner = aboutImages[0]?.image || null;
+---
+
+<PortfolioLayout
+  title="About | JKC Photos"
+  description="About JKC Photos. Concert and event photographer based in Kansas City."
+  ogImage={settings?.defaultOgImage}
+  pageTitle="About"
+  lede={lede}
+  bannerImage={banner}
+>
+  {aboutImages.length > 0 && (
+    <div class="grid">
+      {aboutImages.slice(0, 6).map((item, i) => (
+        <ImageTile item={item} ariaLabel={`About photo ${i + 1}`} sizes="(max-width: 900px) 100vw, 33vw" />
+      ))}
+    </div>
+  )}
+
+  <div class="section__head fade-in" style="margin-top: 64px;">
+    <h2>More coming soon</h2>
+    <p>New work added regularly. Check back or follow along.</p>
+  </div>
+</PortfolioLayout>

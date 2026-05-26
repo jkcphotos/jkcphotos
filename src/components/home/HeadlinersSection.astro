@@ -1,0 +1,19 @@
+---
+import SectionBanner from "./SectionBanner.astro";
+import MasonryGallery from "../gallery/MasonryGallery.astro";
+import type { GalleryImageValue, SanityImageValue } from "../../lib/sanityImage";
+
+interface Props {
+  banner?: SanityImageValue | null;
+  items?: GalleryImageValue[] | null;
+}
+
+const { banner, items } = Astro.props;
+---
+
+<section class="section section--headliners featured-to-headliners" id="headliners">
+  <SectionBanner title="Headliners" image={banner} bgClass="headliners-intro__bg" containerClass="headliners-intro section-banner" />
+  <div class="wrap wrap--wide">
+    <MasonryGallery items={items} ariaLabel="Headliners gallery" sizes="(max-width: 700px) 100vw, 50vw" />
+  </div>
+</section>

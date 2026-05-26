@@ -1,0 +1,49 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import EventGalleryHero from "../../components/events/EventGalleryHero.astro";
+import EventMasonryGallery from "../../components/events/EventMasonryGallery.astro";
+import EventCTA from "../../components/events/EventCTA.astro";
+
+import { sanityClient } from "../../lib/sanityClient";
+import { EVENT_SLUGS_QUERY, EVENT_BY_SLUG_QUERY, SITE_SETTINGS_QUERY } from "../../lib/queries";
+import type { EventGalleryDoc, SiteSettingsDoc } from "../../types/sanity";
+
+export async function getStaticPaths() {
+  try {
+    const slugs = await sanityClient.fetch<{ slug: string }[]>(EVENT_SLUGS_QUERY);
+    return (slugs || []).map(({ slug }) => ({ params: { slug } }));
+  } catch {
+    return [];
+  }
+}
+
+const { slug } = Astro.params;
+
+let event: EventGalleryDoc | null = null;
+let settings: SiteSettingsDoc | null = null;
+
+try {
+  event = await sanityClient.fetch<EventGalleryDoc>(EVENT_BY_SLUG_QUERY, { slug });
+  settings = await sanityClient.fetch<SiteSettingsDoc>(SITE_SETTINGS_QUERY);
+} catch {
+  event = null;
+}
+
+if (!event) {
+  return Astro.redirect("/events/");
+}
+
+const title = event.seoTitle || `${event.title} | JKC Photos`;
+const description = event.seoDescription || event.shortDescription || `Full ${event.title} gallery by JKC Photos.`;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  ogImage={event.coverImage || settings?.defaultOgImage}
+  forceScrolledHeader
+>
+  <EventGalleryHero event={event} />
+  <EventMasonryGallery items={event.gallery} ariaLabel={`${event.title} gallery`} />
+  <EventCTA />
+</BaseLayout>

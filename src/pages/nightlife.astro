@@ -1,0 +1,51 @@
+---
+import PortfolioLayout from "../layouts/PortfolioLayout.astro";
+import ImageTile from "../components/gallery/ImageTile.astro";
+import MasonryGallery from "../components/gallery/MasonryGallery.astro";
+import { sanityClient } from "../lib/sanityClient";
+import { PORTFOLIO_PAGE_QUERY, SITE_SETTINGS_QUERY } from "../lib/queries";
+import type { PortfolioPageDoc, SiteSettingsDoc } from "../types/sanity";
+
+let portfolio: PortfolioPageDoc | null = null;
+let settings: SiteSettingsDoc | null = null;
+
+try {
+  portfolio = await sanityClient.fetch<PortfolioPageDoc>(PORTFOLIO_PAGE_QUERY, { slug: "nightlife" });
+  settings = await sanityClient.fetch<SiteSettingsDoc>(SITE_SETTINGS_QUERY);
+} catch {
+  portfolio = null;
+}
+
+const title = portfolio?.seoTitle || "Nightlife | JKC Photos";
+const description =
+  portfolio?.seoDescription || "Nightlife and club photography. Capturing energy and atmosphere.";
+const lede =
+  portfolio?.lede || "Club nights, DJ sets, and late-night energy. The vibe, the crowd, the moment.";
+---
+
+<PortfolioLayout
+  title={title}
+  description={description}
+  ogImage={settings?.defaultOgImage}
+  pageTitle={portfolio?.title || "Nightlife"}
+  lede={lede}
+  bannerImage={portfolio?.bannerImage}
+>
+  {portfolio?.featuredImages && portfolio.featuredImages.length > 0 && (
+    <div class="grid">
+      {portfolio.featuredImages.map((item, i) => (
+        <ImageTile item={item} ariaLabel={`Nightlife featured ${i + 1}`} sizes="(max-width: 900px) 100vw, 33vw" />
+      ))}
+    </div>
+  )}
+
+  {portfolio?.gallery && portfolio.gallery.length > 0 && (
+    <>
+      <div class="section__head fade-in" style="margin-top: 64px;">
+        <h2>{portfolio.expandedHeadline || "Expanded Gallery"}</h2>
+        <p>{portfolio.expandedDescription || "Additional nightlife work added from your archive."}</p>
+      </div>
+      <MasonryGallery items={portfolio.gallery} ariaLabel="Expanded nightlife gallery" sizes="(max-width: 700px) 100vw, 33vw" />
+    </>
+  )}
+</PortfolioLayout>

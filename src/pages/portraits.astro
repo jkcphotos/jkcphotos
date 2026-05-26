@@ -1,0 +1,51 @@
+---
+import PortfolioLayout from "../layouts/PortfolioLayout.astro";
+import ImageTile from "../components/gallery/ImageTile.astro";
+import MasonryGallery from "../components/gallery/MasonryGallery.astro";
+import { sanityClient } from "../lib/sanityClient";
+import { PORTFOLIO_PAGE_QUERY, SITE_SETTINGS_QUERY } from "../lib/queries";
+import type { PortfolioPageDoc, SiteSettingsDoc } from "../types/sanity";
+
+let portfolio: PortfolioPageDoc | null = null;
+let settings: SiteSettingsDoc | null = null;
+
+try {
+  portfolio = await sanityClient.fetch<PortfolioPageDoc>(PORTFOLIO_PAGE_QUERY, { slug: "portraits" });
+  settings = await sanityClient.fetch<SiteSettingsDoc>(SITE_SETTINGS_QUERY);
+} catch {
+  portfolio = null;
+}
+
+const title = portfolio?.seoTitle || "Portraits | JKC Photos";
+const description =
+  portfolio?.seoDescription || "Portrait photography for artists, DJs, and creative professionals.";
+const lede =
+  portfolio?.lede || "Artist portraits, press shots, and creative lifestyle work. Simple setups, striking results.";
+---
+
+<PortfolioLayout
+  title={title}
+  description={description}
+  ogImage={settings?.defaultOgImage}
+  pageTitle={portfolio?.title || "Portraits"}
+  lede={lede}
+  bannerImage={portfolio?.bannerImage}
+>
+  {portfolio?.featuredImages && portfolio.featuredImages.length > 0 && (
+    <div class="grid">
+      {portfolio.featuredImages.map((item, i) => (
+        <ImageTile item={item} ariaLabel={`Portrait featured ${i + 1}`} sizes="(max-width: 900px) 100vw, 33vw" />
+      ))}
+    </div>
+  )}
+
+  {portfolio?.gallery && portfolio.gallery.length > 0 && (
+    <>
+      <div class="section__head fade-in" style="margin-top: 64px;">
+        <h2>{portfolio.expandedHeadline || "Expanded Gallery"}</h2>
+        <p>{portfolio.expandedDescription || "Additional portrait work added from your archive."}</p>
+      </div>
+      <MasonryGallery items={portfolio.gallery} ariaLabel="Expanded portraits gallery" sizes="(max-width: 700px) 100vw, 33vw" />
+    </>
+  )}
+</PortfolioLayout>

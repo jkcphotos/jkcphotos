@@ -1,0 +1,20 @@
+---
+import EditorialGrid from "../gallery/EditorialGrid.astro";
+import type { GalleryImageValue } from "../../lib/sanityImage";
+
+interface Props {
+  items?: GalleryImageValue[] | null;
+}
+
+const { items } = Astro.props;
+---
+
+<section class="section section--peek" id="work">
+  <div class="wrap wrap--wide">
+    <div class="section__head section__head--featured fade-in">
+      <h2>Featured Work</h2>
+      <p>Big production moments. Click any image to view full screen.</p>
+    </div>
+    <EditorialGrid items={items} ariaLabel="Featured work" />
+  </div>
+</section>

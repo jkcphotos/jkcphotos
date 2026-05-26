@@ -1,0 +1,40 @@
+---
+import { urlFor, type SanityImageValue } from "../../lib/sanityImage";
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: SanityImageValue | null;
+  ogImageUrl?: string;
+  canonical?: string;
+}
+
+const {
+  title = "JKC Photos | Concert + Event Photography",
+  description = "Concert, nightlife, and brand event photography. Kansas City and available for travel.",
+  ogImage,
+  ogImageUrl,
+  canonical
+} = Astro.props;
+
+const resolvedOgImageUrl =
+  ogImageUrl ||
+  (ogImage ? urlFor(ogImage as any).width(1200).height(630).fit("crop").auto("format").quality(80).url() : "/og-default.jpg");
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:type" content="website" />
+<meta property="og:image" content={resolvedOgImageUrl} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={resolvedOgImageUrl} />
+{canonical && <link rel="canonical" href={canonical} />}
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="alternate icon" href="/favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://cdn.sanity.io" />

@@ -1,0 +1,29 @@
+---
+import ImageTile from "./ImageTile.astro";
+import type { GalleryImageValue } from "../../lib/sanityImage";
+
+interface Props {
+  items: GalleryImageValue[] | undefined | null;
+  ariaLabel?: string;
+  fullBleed?: boolean;
+}
+
+const { items = [], ariaLabel, fullBleed = true } = Astro.props;
+const safeItems = Array.isArray(items) ? items.filter((i) => i?.image) : [];
+
+function variantFor(item: GalleryImageValue, index: number): "feature" | "hero" | "mid" | "wide" | "default" {
+  if (item.displayRole === "featured") return "feature";
+  if (item.displayRole === "wide") return "wide";
+  if (item.displayRole === "portrait") return "mid";
+  if (index === 0) return "feature";
+  if (index === 1) return "hero";
+  if (index >= 5) return "wide";
+  return "mid";
+}
+---
+
+<div class={`grid grid--masonry ${fullBleed ? "grid--full" : ""}`} aria-label={ariaLabel}>
+  {safeItems.map((item, i) => (
+    <ImageTile item={item} variant={variantFor(item, i)} ariaLabel={`${ariaLabel || "Featured work"} image ${i + 1}`} />
+  ))}
+</div>

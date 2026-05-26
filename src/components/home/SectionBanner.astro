@@ -1,0 +1,18 @@
+---
+import SanityImage from "../sanity/SanityImage.astro";
+import type { SanityImageValue } from "../../lib/sanityImage";
+
+interface Props {
+  title: string;
+  image?: SanityImageValue | null;
+  bgClass?: string;
+  containerClass?: string;
+}
+
+const { title, image, bgClass = "headliners-intro__bg", containerClass = "headliners-intro section-banner" } = Astro.props;
+---
+
+<div class={containerClass}>
+  {image && <SanityImage image={image} class={bgClass} sizes="100vw" fit="cover" />}
+  <h2>{title}</h2>
+</div>

@@ -1,0 +1,32 @@
+---
+import SanityImage from "../sanity/SanityImage.astro";
+import { formatEventMeta } from "../../lib/format";
+import type { EventGalleryDoc } from "../../types/sanity";
+
+interface Props {
+  event: EventGalleryDoc;
+}
+
+const { event } = Astro.props;
+const meta = formatEventMeta({
+  location: event.location,
+  eventDate: event.eventDate,
+  yearLabel: event.yearLabel,
+  photoCount: event.gallery?.length
+});
+---
+
+<section class="event-detail-hero" id="eventHero">
+  {event.coverImage && (
+    <SanityImage image={event.coverImage} class="event-detail-hero__bg" sizes="100vw" fit="cover" loading="eager" />
+  )}
+  <div class="event-detail-hero__overlay"></div>
+
+  <div class="wrap event-detail-hero__content">
+    <a class="back-link" href="/events/">← All Events</a>
+    {event.subtitle && <p class="eyebrow">{event.subtitle}</p>}
+    <h1>{event.title}</h1>
+    {meta && <p class="event-meta">{meta}</p>}
+    {event.shortDescription && <p class="event-description">{event.shortDescription}</p>}
+  </div>
+</section>
