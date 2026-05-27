@@ -2,8 +2,11 @@ import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
 import sanity from "@sanity/astro";
 
+import cloudflare from "@astrojs/cloudflare";
+
 export default defineConfig({
   site: "https://jkcphotos.com",
+
   integrations: [
     react(),
     sanity({
@@ -13,9 +16,13 @@ export default defineConfig({
       studioBasePath: "/admin"
     })
   ],
+
   vite: {
     ssr: {
       noExternal: ["@sanity/client"]
     }
-  }
+  },
+
+  output: "hybrid",
+  adapter: cloudflare()
 });
