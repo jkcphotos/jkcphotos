@@ -167,6 +167,19 @@ const EVENT_META: Record<
     description:
       "Performance coverage centered on headliner presence, crowd response, production scale, and polished images for promotion.",
     sortOrder: 6,
+    gallerySortOverrides: {
+      "DSC00839.jpg": 1,
+      "DSC07943.jpg": 2,
+      "DSC07896.jpg": 3,
+      "DSC08085.jpg": 4,
+      "DSC08110.jpg": 5,
+      "DSC07773-Enhanced-NR.jpg": 6,
+      "DSC08181.jpg": 7,
+      "DSC00343.jpg": 8,
+      "DSC08225.jpg": 9,
+      "DSC00715.jpg": 10,
+      "DSC08047.jpg": 11,
+    },
   },
 };
 
