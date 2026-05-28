@@ -6,14 +6,18 @@ import EventCTA from "../../components/events/EventCTA.astro";
 
 import { sanityClient } from "../../lib/sanityClient";
 import { EVENT_SLUGS_QUERY, EVENT_BY_SLUG_QUERY, SITE_SETTINGS_QUERY } from "../../lib/queries";
+import { LOCAL_EVENTS } from "../../lib/localEvents";
 import type { EventGalleryDoc, SiteSettingsDoc } from "../../types/sanity";
 
 export async function getStaticPaths() {
+  const localPaths = LOCAL_EVENTS.map((event) => ({ params: { slug: event.slug } }));
   try {
     const slugs = await sanityClient.fetch<{ slug: string }[]>(EVENT_SLUGS_QUERY);
-    return (slugs || []).map(({ slug }) => ({ params: { slug } }));
+    const sanityPaths = (slugs || []).map(({ slug }) => ({ params: { slug } }));
+    const known = new Set(sanityPaths.map((path) => path.params.slug));
+    return [...sanityPaths, ...localPaths.filter((path) => !known.has(path.params.slug))];
   } catch {
-    return [];
+    return localPaths;
   }
 }
 
@@ -27,6 +31,10 @@ try {
   settings = await sanityClient.fetch<SiteSettingsDoc>(SITE_SETTINGS_QUERY);
 } catch {
   event = null;
+}
+
+if (!event) {
+  event = (LOCAL_EVENTS.find((item) => item.slug === slug) || null) as unknown as EventGalleryDoc | null;
 }
 
 if (!event) {

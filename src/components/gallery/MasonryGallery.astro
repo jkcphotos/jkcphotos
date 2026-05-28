@@ -18,16 +18,28 @@ const {
   sizes = "(max-width: 600px) 100vw, (max-width: 1100px) 50vw, 33vw"
 } = Astro.props;
 
-const safeItems = Array.isArray(items) ? items.filter((i) => i?.image) : [];
+const safeItems = Array.isArray(items) ? items.filter((i) => i?.image || (i as any)?.src) : [];
 ---
 
 <div class={containerClass} aria-label={ariaLabel}>
   {safeItems.map((item, i) => {
-    const fullUrl = urlFor(item.image as any).width(2400).fit("max").auto("format").quality(85).url();
-    const alt = item.image?.alt || `${ariaLabel || "Gallery"} image ${i + 1}`;
+    const localSrc = (item as any).src as string | undefined;
+    const fullUrl = localSrc || urlFor(item.image as any).width(2400).fit("max").auto("format").quality(85).url();
+    const alt = (item as any).alt || item.image?.alt || `${ariaLabel || "Gallery"} image ${i + 1}`;
     return (
       <button class={itemClass} type="button" data-full={fullUrl} aria-label={alt}>
-        <SanityImage image={item.image} sizes={sizes} fit="max" />
+        {localSrc ? (
+          <img
+            src={localSrc}
+            width={(item as any).width}
+            height={(item as any).height}
+            alt={alt}
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <SanityImage image={item.image} sizes={sizes} fit="max" />
+        )}
       </button>
     );
   })}

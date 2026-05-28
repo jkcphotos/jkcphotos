@@ -21,6 +21,9 @@ const meta = formatEventMeta({
     {event.coverImage && (
       <SanityImage image={event.coverImage} alt={event.title} sizes="(max-width: 1050px) 100vw, 33vw" fit="cover" />
     )}
+    {!event.coverImage && (event as any).cover && (
+      <img src={(event as any).cover} alt={event.title} loading="lazy" decoding="async" />
+    )}
   </div>
   <div class="event-card__content">
     {event.subtitle && <span class="event-card__tag">{event.subtitle}</span>}

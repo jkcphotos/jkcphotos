@@ -20,6 +20,9 @@ const meta = formatEventMeta({
   {event.coverImage && (
     <SanityImage image={event.coverImage} class="event-detail-hero__bg" sizes="100vw" fit="cover" loading="eager" />
   )}
+  {!event.coverImage && (event as any).cover && (
+    <img class="event-detail-hero__bg" src={(event as any).cover} alt={event.title} loading="eager" decoding="async" />
+  )}
   <div class="event-detail-hero__overlay"></div>
 
   <div class="wrap event-detail-hero__content">
